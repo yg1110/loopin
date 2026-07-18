@@ -1,8 +1,10 @@
 // Supabase Edge Function: 댓글 INSERT 시 게시물 작성자에게 Expo 푸시 발송
 //
-// 배포:
-//   supabase functions deploy notify-comment --no-verify-jwt --project-ref <PROJECT_REF>
-// (웹훅은 backend/migrations/0002_push.sql 하단의 트리거 또는 대시보드 Webhooks로 연결)
+// 배포 (backend/ 에서 실행):
+//   supabase login
+//   supabase functions deploy notify-comment --project-ref tyervopkkaitmeerwdru
+//   (verify_jwt=false는 config.toml에 설정됨)
+// 웹훅 연결: backend/migrations/0002_push.sql 하단 트리거 또는 대시보드 Database → Webhooks.
 //
 // 실행 환경변수(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)는 Supabase가 자동 주입.
 
