@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -87,7 +88,10 @@ export default function ShareScreen() {
         <Text style={styles.emoji}>{habit.emoji ?? '⭐'}</Text>
         <View>
           <Text style={styles.habitName}>{habit.name}</Text>
-          <Text style={styles.streak}>🔥 {current}일 연속</Text>
+          <View style={styles.streakRow}>
+            <Ionicons name="flame" size={14} color="#ea580c" />
+            <Text style={styles.streak}>{current}일 연속</Text>
+          </View>
         </View>
       </View>
 
@@ -112,7 +116,8 @@ export default function ShareScreen() {
         </View>
       ) : (
         <Pressable style={styles.photoBtn} onPress={pickImage} disabled={createPost.isPending}>
-          <Text style={styles.photoBtnText}>＋ 사진 추가</Text>
+          <Ionicons name="camera-outline" size={22} color="#6b7280" />
+          <Text style={styles.photoBtnText}>사진 추가</Text>
         </Pressable>
       )}
 
@@ -148,7 +153,8 @@ const styles = StyleSheet.create({
   },
   emoji: { fontSize: 36 },
   habitName: { fontSize: 17, fontWeight: '700', color: '#111' },
-  streak: { fontSize: 14, color: '#ea580c', marginTop: 2 },
+  streakRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2 },
+  streak: { fontSize: 14, color: '#ea580c' },
   label: { fontSize: 14, fontWeight: '600', color: '#374151', marginTop: 8 },
   input: {
     borderWidth: 1,
@@ -161,12 +167,15 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   photoBtn: {
+    flexDirection: 'row',
+    gap: 8,
     borderWidth: 1,
     borderColor: '#d1d5db',
     borderStyle: 'dashed',
     borderRadius: 12,
     paddingVertical: 24,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   photoBtnText: { color: '#6b7280', fontSize: 15 },
   preview: { width: '100%', aspectRatio: 4 / 3, borderRadius: 12, backgroundColor: '#f3f4f6' },

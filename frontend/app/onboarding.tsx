@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -64,7 +65,9 @@ export default function OnboardingScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={styles.content}>
-        <Text style={styles.emoji}>🔁</Text>
+        <View style={styles.logo}>
+          <Ionicons name="sync" size={44} color="#fff" />
+        </View>
         <Text style={styles.title}>Loopin에 오신 걸 환영해요</Text>
         <Text style={styles.subtitle}>피드에 표시될 닉네임을 정해주세요.</Text>
 
@@ -102,7 +105,16 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   content: { flex: 1, justifyContent: 'center', paddingHorizontal: 24, gap: 12 },
-  emoji: { fontSize: 56, textAlign: 'center' },
+  logo: {
+    width: 88,
+    height: 88,
+    borderRadius: 24,
+    backgroundColor: '#3b82f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
   title: { fontSize: 24, fontWeight: '700', color: '#111', textAlign: 'center' },
   subtitle: { fontSize: 15, color: '#6b7280', textAlign: 'center', marginBottom: 12 },
   input: {

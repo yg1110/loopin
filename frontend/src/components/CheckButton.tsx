@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 
 export function CheckButton({
   done,
@@ -19,9 +20,7 @@ export function CheckButton({
       {loading ? (
         <ActivityIndicator size="small" color={done ? '#fff' : '#3b82f6'} />
       ) : (
-        <Text style={[styles.mark, done ? styles.markDone : styles.markTodo]}>
-          {done ? '✓' : ''}
-        </Text>
+        <Ionicons name="checkmark-sharp" size={22} color={done ? '#fff' : 'transparent'} />
       )}
     </Pressable>
   );
@@ -38,7 +37,4 @@ const styles = StyleSheet.create({
   },
   todo: { borderColor: '#d1d5db', backgroundColor: '#fff' },
   done: { borderColor: '#3b82f6', backgroundColor: '#3b82f6' },
-  mark: { fontSize: 20, fontWeight: '800' },
-  markDone: { color: '#fff' },
-  markTodo: { color: 'transparent' },
 });

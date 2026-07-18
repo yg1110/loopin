@@ -1,5 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { EmptyState } from '@/components/EmptyState';
 import { HabitCard } from '@/components/HabitCard';
 import { habitStatus, useCompletions, useHabits, useToggleToday } from '@/features/habits/hooks';
@@ -52,7 +53,7 @@ export default function HomeScreen() {
           }}
           ListEmptyComponent={
             <EmptyState
-              emoji="🌱"
+              icon="leaf-outline"
               title="아직 습관이 없어요"
               subtitle="오른쪽 아래 + 버튼으로 첫 습관을 만들어보세요."
             />
@@ -61,7 +62,7 @@ export default function HomeScreen() {
       )}
 
       <Pressable style={styles.fab} onPress={() => router.push('/new-habit')}>
-        <Text style={styles.fabText}>+</Text>
+        <Ionicons name="add" size={32} color="#fff" />
       </Pressable>
     </View>
   );
@@ -87,5 +88,4 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
   },
-  fabText: { color: '#fff', fontSize: 30, lineHeight: 34, fontWeight: '300' },
 });

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -88,7 +89,8 @@ export default function PostDetailScreen() {
                 </Text>
               </View>
               <View style={styles.streakPill}>
-                <Text style={styles.streakText}>🔥 {post.streakCount}일</Text>
+                <Ionicons name="flame" size={13} color="#ea580c" />
+                <Text style={styles.streakText}>{post.streakCount}일</Text>
               </View>
             </View>
 
@@ -109,7 +111,7 @@ export default function PostDetailScreen() {
           commentsQ.isLoading ? (
             <ActivityIndicator style={{ marginTop: 24 }} />
           ) : (
-            <EmptyState emoji="💬" title="첫 댓글을 남겨보세요" />
+            <EmptyState icon="chatbubble-outline" title="첫 댓글을 남겨보세요" />
           )
         }
       />
@@ -159,7 +161,15 @@ const styles = StyleSheet.create({
   avatarText: { color: '#fff', fontSize: 18, fontWeight: '700' },
   nickname: { fontSize: 15, fontWeight: '600', color: '#111' },
   time: { fontSize: 12, color: '#9ca3af' },
-  streakPill: { backgroundColor: '#fff7ed', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
+  streakPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: '#fff7ed',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
   streakText: { color: '#ea580c', fontSize: 13, fontWeight: '600' },
   habit: { fontSize: 15, color: '#111', fontWeight: '600' },
   habitLabel: { color: '#9ca3af', fontWeight: '400', fontSize: 13 },

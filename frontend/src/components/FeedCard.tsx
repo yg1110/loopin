@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -23,7 +24,8 @@ export function FeedCard({ post, onPress }: { post: FeedPost; onPress?: () => vo
           <Text style={styles.meta}>{timeAgo(post.createdAt)}</Text>
         </View>
         <View style={styles.streakPill}>
-          <Text style={styles.streakText}>🔥 {post.streakCount}일</Text>
+          <Ionicons name="flame" size={13} color="#ea580c" />
+          <Text style={styles.streakText}>{post.streakCount}일</Text>
         </View>
       </View>
 
@@ -39,7 +41,8 @@ export function FeedCard({ post, onPress }: { post: FeedPost; onPress?: () => vo
       ) : null}
 
       <View style={styles.footer}>
-        <Text style={styles.commentCount}>💬 {post.commentCount}</Text>
+        <Ionicons name="chatbubble-outline" size={16} color="#6b7280" />
+        <Text style={styles.commentCount}>{post.commentCount}</Text>
       </View>
     </Pressable>
   );
@@ -66,12 +69,20 @@ const styles = StyleSheet.create({
   avatarText: { color: '#fff', fontSize: 18, fontWeight: '700' },
   nickname: { fontSize: 15, fontWeight: '600', color: '#111' },
   meta: { fontSize: 12, color: '#9ca3af' },
-  streakPill: { backgroundColor: '#fff7ed', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
+  streakPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: '#fff7ed',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
   streakText: { color: '#ea580c', fontSize: 13, fontWeight: '600' },
   habit: { fontSize: 15, color: '#111', fontWeight: '600' },
   habitLabel: { color: '#9ca3af', fontWeight: '400', fontSize: 13 },
   caption: { fontSize: 15, color: '#374151', lineHeight: 21 },
   image: { width: '100%', aspectRatio: 4 / 3, borderRadius: 12, backgroundColor: '#f3f4f6' },
-  footer: { flexDirection: 'row', gap: 16, paddingTop: 2 },
+  footer: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingTop: 2 },
   commentCount: { fontSize: 14, color: '#6b7280' },
 });

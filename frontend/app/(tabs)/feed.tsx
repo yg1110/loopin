@@ -29,7 +29,7 @@ export default function FeedScreen() {
       )}
       ListEmptyComponent={
         <EmptyState
-          emoji="🌐"
+          icon="earth-outline"
           title="아직 게시물이 없어요"
           subtitle="습관을 체크하고 첫 인증을 공유해보세요!"
         />

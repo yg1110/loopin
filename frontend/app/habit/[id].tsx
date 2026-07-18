@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import {
@@ -61,14 +62,17 @@ export default function HabitDetailScreen() {
 
       <View style={styles.stats}>
         <View style={styles.stat}>
-          <Text style={styles.statValue}>🔥 {current}</Text>
+          <Ionicons name="flame" size={26} color="#ea580c" />
+          <Text style={styles.statValue}>{current}</Text>
           <Text style={styles.statLabel}>현재 연속</Text>
         </View>
         <View style={styles.stat}>
-          <Text style={styles.statValue}>🏆 {longest}</Text>
+          <Ionicons name="trophy" size={26} color="#f59e0b" />
+          <Text style={styles.statValue}>{longest}</Text>
           <Text style={styles.statLabel}>최장 연속</Text>
         </View>
         <View style={styles.stat}>
+          <Ionicons name="checkmark-done" size={26} color="#3b82f6" />
           <Text style={styles.statValue}>{keys.length}</Text>
           <Text style={styles.statLabel}>총 완료</Text>
         </View>

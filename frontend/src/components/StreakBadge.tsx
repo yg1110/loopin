@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
 export function StreakBadge({ current }: { current: number }) {
@@ -10,13 +11,17 @@ export function StreakBadge({ current }: { current: number }) {
   }
   return (
     <View style={styles.badge}>
-      <Text style={styles.text}>🔥 {current}일</Text>
+      <Ionicons name="flame" size={14} color="#ea580c" />
+      <Text style={styles.text}>{current}일</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
     backgroundColor: '#fff7ed',
     borderRadius: 999,
     paddingHorizontal: 10,
