@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-r
 import { Globe, Home, User } from 'lucide-react';
 import { useSession } from '@/store/session';
 import { syncWebPush } from '@/lib/webpush';
+import { InstallBanner } from '@/components/InstallBanner';
 import { OnboardingScreen } from '@/screens/OnboardingScreen';
 import { HomeScreen } from '@/screens/HomeScreen';
 import { FeedScreen } from '@/screens/FeedScreen';
@@ -38,6 +39,7 @@ function TabLayout() {
       <main className="flex-1 pb-16">
         <Outlet />
       </main>
+      <InstallBanner />
       <nav className="sticky bottom-0 z-10 flex border-t border-gray-100 bg-white">
         {TABS.map(({ to, icon: Icon, label, end }) => (
           <NavLink
