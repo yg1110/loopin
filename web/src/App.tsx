@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom';
 import { Globe, Home, User } from 'lucide-react';
 import { useSession } from '@/store/session';
+import { syncWebPush } from '@/lib/webpush';
 import { OnboardingScreen } from '@/screens/OnboardingScreen';
 import { HomeScreen } from '@/screens/HomeScreen';
 import { FeedScreen } from '@/screens/FeedScreen';
@@ -23,6 +25,11 @@ const TABS = [
 ];
 
 function TabLayout() {
+  const deviceId = useSession((s) => s.deviceId);
+  useEffect(() => {
+    syncWebPush(deviceId);
+  }, [deviceId]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-10 flex h-12 items-center justify-center border-b border-gray-100 bg-white/90 backdrop-blur">
