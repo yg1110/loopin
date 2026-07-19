@@ -2,6 +2,21 @@ import { supabase } from '@/lib/supabase';
 
 export type EnsureProfileResult = { ok: true } | { ok: false; reason: 'NICKNAME_TAKEN' };
 
+/**
+ * 이 기기의 프로필이 DB에 존재하는지 확인.
+ * - true: 존재 / false: 명확히 없음(삭제됨) → 자동 로그아웃 대상
+ * - 네트워크·서버 오류 시엔 null(오프라인에서 잘못 로그아웃 방지)
+ */
+export async function profileExists(deviceId: string): Promise<boolean | null> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('device_id')
+    .eq('device_id', deviceId)
+    .maybeSingle();
+  if (error) return null;
+  return !!data;
+}
+
 /** 닉네임 사전 가용성 조회 (UX용). 최종 판정은 ensureProfile의 unique 제약. */
 export async function isNicknameTaken(nickname: string): Promise<boolean> {
   const { data, error } = await supabase

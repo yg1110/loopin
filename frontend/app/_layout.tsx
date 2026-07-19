@@ -7,6 +7,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import * as Notifications from 'expo-notifications';
 import { queryClient } from '@/lib/queryClient';
 import { registerForPushNotifications } from '@/lib/notifications';
+import { profileExists } from '@/features/identity/api';
 import { useSession } from '@/store/session';
 
 /** bootstrap 완료 후 닉네임 유무에 따라 온보딩/탭으로 라우팅 */
@@ -25,6 +26,21 @@ function useAuthGate() {
       router.replace('/');
     }
   }, [ready, nickname, segments, router]);
+}
+
+/** DB에 프로필이 없으면(삭제됨) 자동 로그아웃 → 온보딩 */
+function useSessionVerify() {
+  const ready = useSession((s) => s.ready);
+  const deviceId = useSession((s) => s.deviceId);
+  const nickname = useSession((s) => s.nickname);
+  const logout = useSession((s) => s.logout);
+
+  useEffect(() => {
+    if (!ready || !deviceId || !nickname) return;
+    profileExists(deviceId).then((exists) => {
+      if (exists === false) logout();
+    });
+  }, [ready, deviceId, nickname, logout]);
 }
 
 /** 닉네임 확정 후 푸시 토큰 등록 + 알림 탭 시 해당 게시물로 이동 */
@@ -59,6 +75,7 @@ export default function RootLayout() {
   }, [bootstrap]);
 
   useAuthGate();
+  useSessionVerify();
   usePushNotifications();
 
   if (!ready) {

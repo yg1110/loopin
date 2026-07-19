@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getOrCreateDeviceId, getStoredNickname, saveNickname } from '@/lib/identity';
+import { clearNickname, getOrCreateDeviceId, getStoredNickname, saveNickname } from '@/lib/identity';
 
 type SessionState = {
   deviceId: string | null;
@@ -8,6 +8,7 @@ type SessionState = {
   ready: boolean;
   bootstrap: () => Promise<void>;
   setNickname: (nickname: string) => Promise<void>;
+  logout: () => Promise<void>;
 };
 
 export const useSession = create<SessionState>((set) => ({
@@ -21,5 +22,9 @@ export const useSession = create<SessionState>((set) => ({
   setNickname: async (nickname: string) => {
     await saveNickname(nickname);
     set({ nickname });
+  },
+  logout: async () => {
+    await clearNickname();
+    set({ nickname: null });
   },
 }));

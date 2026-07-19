@@ -21,3 +21,12 @@ export async function getStoredNickname(): Promise<string | null> {
 export async function saveNickname(nickname: string): Promise<void> {
   await AsyncStorage.setItem(NICKNAME_KEY, nickname);
 }
+
+/**
+ * 로그아웃: 로컬 닉네임(세션)만 제거. device_id는 유지한다.
+ * → 같은 닉네임으로 재로그인 시 기존 프로필에 재연결(프로필이 있으면),
+ *   프로필이 삭제된 경우엔 재등록이 정상 동작.
+ */
+export async function clearNickname(): Promise<void> {
+  await AsyncStorage.removeItem(NICKNAME_KEY);
+}
