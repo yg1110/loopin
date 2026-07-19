@@ -1,13 +1,20 @@
 import { useState } from 'react';
-import { Bell, BellRing, User } from 'lucide-react';
+import { Bell, BellRing, LogOut, User } from 'lucide-react';
 import { useSession } from '@/store/session';
 import { enableWebPush, isPushSupported, pushPermission } from '@/lib/webpush';
 
 export function ProfileScreen() {
   const nickname = useSession((s) => s.nickname);
   const deviceId = useSession((s) => s.deviceId);
+  const logout = useSession((s) => s.logout);
   const [perm, setPerm] = useState(pushPermission());
   const [busy, setBusy] = useState(false);
+
+  function onLogout() {
+    if (window.confirm('로그아웃할까요? 이 기기의 닉네임 정보가 초기화됩니다.')) {
+      logout();
+    }
+  }
 
   async function onEnable() {
     setBusy(true);
@@ -53,6 +60,14 @@ export function ProfileScreen() {
           (iOS는 홈 화면에 추가 후 사용)
         </p>
       </div>
+
+      <button
+        onClick={onLogout}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 py-3.5 text-[15px] font-semibold text-gray-600"
+      >
+        <LogOut size={18} />
+        로그아웃
+      </button>
     </div>
   );
 }

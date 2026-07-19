@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-r
 import { Globe, Home, User } from 'lucide-react';
 import { useSession } from '@/store/session';
 import { syncWebPush } from '@/lib/webpush';
+import { profileExists } from '@/features/identity/api';
 import { InstallBanner } from '@/components/InstallBanner';
 import { OnboardingScreen } from '@/screens/OnboardingScreen';
 import { HomeScreen } from '@/screens/HomeScreen';
@@ -27,6 +28,15 @@ const TABS = [
 
 function TabLayout() {
   const deviceId = useSession((s) => s.deviceId);
+  const logout = useSession((s) => s.logout);
+
+  // DB에 프로필이 없으면(삭제됨) 자동 로그아웃 → 온보딩으로
+  useEffect(() => {
+    profileExists(deviceId).then((exists) => {
+      if (exists === false) logout();
+    });
+  }, [deviceId, logout]);
+
   useEffect(() => {
     syncWebPush(deviceId);
   }, [deviceId]);
