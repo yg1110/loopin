@@ -42,15 +42,15 @@ function TabLayout() {
   }, [deviceId]);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 flex h-12 items-center justify-center border-b border-gray-100 bg-white/90 backdrop-blur">
+    <div className="flex h-full flex-col">
+      <header className="z-10 flex h-12 flex-none items-center justify-center border-b border-gray-100 bg-white/90 backdrop-blur">
         <span className="text-lg font-bold text-blue-500">Loopin</span>
       </header>
-      <main className="flex-1 pb-16">
+      <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <Outlet />
       </main>
       <InstallBanner />
-      <nav className="sticky bottom-0 z-10 flex border-t border-gray-100 bg-white">
+      <nav className="z-10 flex flex-none border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom)]">
         {TABS.map(({ to, icon: Icon, label, end }) => (
           <NavLink
             key={to}
@@ -70,7 +70,7 @@ function TabLayout() {
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="mx-auto min-h-screen max-w-md bg-gray-50 shadow-sm">
+      <div className="mx-auto h-full max-w-md overflow-hidden bg-gray-50 shadow-sm">
         <Routes>
           <Route element={<RequireNickname />}>
             <Route element={<TabLayout />}>

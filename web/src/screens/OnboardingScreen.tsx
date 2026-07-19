@@ -49,7 +49,7 @@ export function OnboardingScreen() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
+    <div className="mx-auto flex h-full max-w-md flex-col justify-center overflow-y-auto px-6">
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
         <div className="mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-500">
           <RotateCw size={40} className="text-white" strokeWidth={2.5} />

@@ -31,10 +31,10 @@ export function PostDetailScreen() {
   const post = postQ.data;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-full flex-col">
       <PageHeader title="게시물" />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {postQ.isLoading ? (
           <p className="py-24 text-center text-sm text-gray-400">불러오는 중…</p>
         ) : !post ? (
@@ -83,7 +83,7 @@ export function PostDetailScreen() {
 
       <form
         onSubmit={onSend}
-        className="sticky bottom-0 flex items-center gap-2 border-t border-gray-100 bg-white p-3"
+        className="flex flex-none items-center gap-2 border-t border-gray-100 bg-white p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
       >
         <input
           className="flex-1 rounded-full border border-gray-300 px-4 py-2.5 text-[15px] outline-none focus:border-blue-500"

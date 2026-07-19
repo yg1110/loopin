@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export function PageHeader({ title }: { title: string }) {
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-10 flex h-12 items-center border-b border-gray-100 bg-white/90 px-2 backdrop-blur">
+    <header className="z-10 flex h-12 flex-none items-center border-b border-gray-100 bg-white/90 px-2 backdrop-blur">
       <button
         onClick={() => navigate(-1)}
         className="flex h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100"

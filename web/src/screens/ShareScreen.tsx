@@ -54,7 +54,7 @@ export function ShareScreen() {
 
   if (!habit) {
     return (
-      <div>
+      <div className="flex h-full flex-col">
         <PageHeader title="인증 공유" />
         <p className="py-24 text-center text-sm text-gray-400">습관 정보를 불러오지 못했어요.</p>
       </div>
@@ -62,9 +62,9 @@ export function ShareScreen() {
   }
 
   return (
-    <div>
+    <div className="flex h-full flex-col">
       <PageHeader title="인증 공유" />
-      <div className="flex flex-col gap-2.5 p-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-5">
         <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3.5">
           <span className="text-3xl">{habit.emoji ?? '⭐'}</span>
           <div>

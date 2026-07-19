@@ -15,7 +15,7 @@ export function HabitDetailScreen() {
 
   if (habitsQ.isLoading || completionsQ.isLoading) {
     return (
-      <div>
+      <div className="flex h-full flex-col">
         <PageHeader title="" />
         <p className="py-24 text-center text-sm text-gray-400">불러오는 중…</p>
       </div>
@@ -24,7 +24,7 @@ export function HabitDetailScreen() {
 
   if (!habit) {
     return (
-      <div>
+      <div className="flex h-full flex-col">
         <PageHeader title="" />
         <p className="py-24 text-center text-sm text-gray-400">습관을 찾을 수 없어요.</p>
       </div>
@@ -43,9 +43,9 @@ export function HabitDetailScreen() {
   }
 
   return (
-    <div>
+    <div className="flex h-full flex-col">
       <PageHeader title={habit.name} />
-      <div className="flex flex-col gap-6 p-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-5">
         <div className="mt-3 flex flex-col items-center gap-2">
           <span className="text-5xl">{habit.emoji ?? '⭐'}</span>
           <p className="text-xl font-bold text-gray-900">{habit.name}</p>

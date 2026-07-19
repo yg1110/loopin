@@ -35,9 +35,9 @@ export function NewHabitScreen() {
   }
 
   return (
-    <div>
+    <div className="flex h-full flex-col">
       <PageHeader title="새 습관" />
-      <form onSubmit={onSubmit} className="flex flex-col gap-2.5 p-5">
+      <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-5">
         <label className="mt-2 text-sm font-semibold text-gray-700">이름</label>
         <input
           className="rounded-xl border border-gray-300 px-3.5 py-3 text-base outline-none focus:border-blue-500"
