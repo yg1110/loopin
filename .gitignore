@@ -50,3 +50,7 @@ backend/supabase/.env
 .claude 
 # PWA dev output
 web/dev-dist/
+
+# stray supabase temp anywhere
+**/supabase/.temp/
+**/supabase/.branches/
