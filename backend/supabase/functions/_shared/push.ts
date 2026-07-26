@@ -113,6 +113,18 @@ export async function sendPush(
   return summary;
 }
 
+/** 구독 중인 전체 기기 목록 (작성자 포함). */
+export async function allDeviceIds(supabase: SupabaseClient): Promise<string[]> {
+  const [expo, web] = await Promise.all([
+    supabase.from('push_tokens').select('device_id'),
+    supabase.from('web_push_subscriptions').select('device_id'),
+  ]);
+  const ids = new Set<string>();
+  for (const row of expo.data ?? []) ids.add((row as { device_id: string }).device_id);
+  for (const row of web.data ?? []) ids.add((row as { device_id: string }).device_id);
+  return [...ids];
+}
+
 /** 게시물/댓글 작성자를 제외한 전체 구독자 device_id 목록. */
 export async function allDeviceIdsExcept(
   supabase: SupabaseClient,

@@ -20,7 +20,8 @@ backend/
 ├─ supabase/functions/
 │  ├─ _shared/push.ts     # 푸시 발송 공통 모듈 (Expo + Web Push)
 │  ├─ notify-comment/     # 댓글 INSERT → 게시물 작성자에게 푸시
-│  └─ notify-post/        # 게시물 INSERT → 작성자 제외 전원에게 푸시(브로드캐스트)
+│  ├─ notify-post/        # 게시물(인증·일기) INSERT → 모든 기기 브로드캐스트
+│  └─ notify-course/      # 데이트 코스 INSERT → 모든 기기 브로드캐스트
 └─ README.md
 ```
 
@@ -28,13 +29,17 @@ backend/
 | 트리거 | 함수 | 수신자 | 웹훅 SQL |
 | --- | --- | --- | --- |
 | `comments` INSERT | `notify-comment` | 게시물 작성자 (본인 댓글 제외) | `migrations/0002_push.sql` |
-| `posts` INSERT | `notify-post` | 작성자를 제외한 모든 구독자 | `migrations/0004_notify_post.sql` |
+| `posts` INSERT | `notify-post` | 구독 중인 **모든 기기**(작성자 포함) | `migrations/0007_push_triggers.sql` |
+| `date_courses` INSERT | `notify-course` | 구독 중인 **모든 기기**(등록자 포함) | `migrations/0007_push_triggers.sql` |
+
+트리거는 `0007_push_triggers.sql` 하나로 세 개가 한꺼번에 세팅된다(여러 번 실행해도 안전).
+적용 여부 확인은 파일 상단 주석의 `pg_trigger` 조회 쿼리 참고.
 
 습관 인증(`kind='habit'`)과 공유 일기(`kind='diary'`)를 `posts` 한 테이블에 담고, 피드는 두 종류를 시간순으로 함께 보여준다 (`migrations/0005_diary.sql`).
 
 배포·시크릿:
 ```bash
-supabase functions deploy notify-comment notify-post --project-ref tyervopkkaitmeerwdru
+supabase functions deploy notify-comment notify-post notify-course --project-ref tyervopkkaitmeerwdru
 supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=mailto:you@example.com
 ```
 

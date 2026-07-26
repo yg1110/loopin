@@ -1,4 +1,7 @@
 -- Loopin: 피드 게시물 INSERT → Edge Function(notify-post) 호출 웹훅
+--
+-- ⚠️ 이 파일은 0007_push_triggers.sql 로 대체되었다.
+--    0007 이 댓글·게시물·데이트 코스 트리거를 한 번에 세팅하므로 0007 만 적용하면 된다.
 -- 적용: Supabase 대시보드 SQL 에디터에 붙여넣기 또는 `supabase db push`
 --
 -- 전제 조건

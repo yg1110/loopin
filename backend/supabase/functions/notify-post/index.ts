@@ -1,5 +1,5 @@
 // Supabase Edge Function: 피드 게시물 INSERT 시 다른 사용자 전원에게 푸시 발송
-// - 팔로우 개념이 없는 공개 피드이므로 작성자를 제외한 모든 구독자에게 브로드캐스트
+// - 팔로우 개념이 없는 공개 피드이므로 구독 중인 모든 기기(작성자 포함)에 브로드캐스트
 // - 네이티브(Expo push token) + 웹(Web Push / PWA) 둘 다 지원
 //
 // 배포 (backend/ 에서 실행):
@@ -11,7 +11,7 @@
 // SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY는 Supabase가 자동 주입.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { allDeviceIdsExcept, sendPush } from '../_shared/push.ts';
+import { allDeviceIds, sendPush } from '../_shared/push.ts';
 
 type PostRecord = {
   id: string;
@@ -51,7 +51,8 @@ Deno.serve(async (req) => {
     const title = `${nickname}님이 ${isDiary ? '일기를' : '인증을'} 올렸어요`;
     const body = caption ? `${headline}${streak} — ${caption}` : `${headline}${streak}`;
 
-    const targets = await allDeviceIdsExcept(supabase, record.owner_id);
+    // 작성자 본인 기기도 포함해 모든 구독 기기에 발송한다.
+    const targets = await allDeviceIds(supabase);
     const summary = await sendPush(supabase, targets, {
       title,
       body,
