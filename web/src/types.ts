@@ -51,3 +51,17 @@ export type Comment = {
   body: string;
   createdAt: string;
 };
+
+export type DateCourse = {
+  id: string;
+  ownerId: string;
+  nickname: string;
+  name: string;
+  /** 분류 코드 (@/lib/courseCategory) */
+  category: string;
+  place?: string | null;
+  link?: string | null;
+  memo?: string | null;
+  visited: boolean;
+  createdAt: string;
+};

@@ -44,7 +44,9 @@ supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=ma
 - `completions`: id, habit_id(FK), owner_id, day_key('YYYY-MM-DD'), created_at, **UNIQUE(habit_id, day_key)**
 - `posts`: id, owner_id, **kind**('habit'|'diary'), habit_name(스냅샷, habit만), streak_count, **title/weather/entry_date**(diary만), caption(본문), image_url(nullable), day_key, created_at
 - `comments`: id, post_id(FK), author_id, body, created_at
+- `date_courses`: id, owner_id, name, category, place, link, memo, visited, created_at — **피드와 분리된 데이트 코스 탭** (`migrations/0006_date_courses.sql`)
 - 뷰 `feed_posts`: posts + profiles(nickname) + 댓글수 집계 (습관 인증·일기 모두 포함)
+- 뷰 `date_course_list`: date_courses + profiles(nickname)
 - (2차) `push_tokens`: device_id, expo_push_token, updated_at
 - (2차) `web_push_subscriptions`: device_id, subscription(jsonb), updated_at
 

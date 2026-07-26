@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom';
-import { Globe, Home, User } from 'lucide-react';
+import { Globe, Home, MapPin, User } from 'lucide-react';
 import { useSession } from '@/store/session';
 import { syncWebPush } from '@/lib/webpush';
 import { profileExists } from '@/features/identity/api';
@@ -11,6 +11,8 @@ import { FeedScreen } from '@/screens/FeedScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { NewHabitScreen } from '@/screens/NewHabitScreen';
 import { NewDiaryScreen } from '@/screens/NewDiaryScreen';
+import { CourseScreen } from '@/screens/CourseScreen';
+import { NewCourseScreen } from '@/screens/NewCourseScreen';
 import { HabitDetailScreen } from '@/screens/HabitDetailScreen';
 import { PostDetailScreen } from '@/screens/PostDetailScreen';
 import { ShareScreen } from '@/screens/ShareScreen';
@@ -24,6 +26,7 @@ function RequireNickname() {
 const TABS = [
   { to: '/', icon: Home, label: '홈', end: true },
   { to: '/feed', icon: Globe, label: '피드', end: false },
+  { to: '/course', icon: MapPin, label: '코스', end: false },
   { to: '/profile', icon: User, label: '프로필', end: false },
 ];
 
@@ -77,10 +80,12 @@ export default function App() {
             <Route element={<TabLayout />}>
               <Route index element={<HomeScreen />} />
               <Route path="feed" element={<FeedScreen />} />
+              <Route path="course" element={<CourseScreen />} />
               <Route path="profile" element={<ProfileScreen />} />
             </Route>
             <Route path="new-habit" element={<NewHabitScreen />} />
             <Route path="new-diary" element={<NewDiaryScreen />} />
+            <Route path="new-course" element={<NewCourseScreen />} />
             <Route path="habit/:id" element={<HabitDetailScreen />} />
             <Route path="post/:id" element={<PostDetailScreen />} />
             <Route path="share" element={<ShareScreen />} />
