@@ -10,6 +10,7 @@ import { HomeScreen } from '@/screens/HomeScreen';
 import { FeedScreen } from '@/screens/FeedScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
 import { NewHabitScreen } from '@/screens/NewHabitScreen';
+import { NewDiaryScreen } from '@/screens/NewDiaryScreen';
 import { HabitDetailScreen } from '@/screens/HabitDetailScreen';
 import { PostDetailScreen } from '@/screens/PostDetailScreen';
 import { ShareScreen } from '@/screens/ShareScreen';
@@ -79,6 +80,7 @@ export default function App() {
               <Route path="profile" element={<ProfileScreen />} />
             </Route>
             <Route path="new-habit" element={<NewHabitScreen />} />
+            <Route path="new-diary" element={<NewDiaryScreen />} />
             <Route path="habit/:id" element={<HabitDetailScreen />} />
             <Route path="post/:id" element={<PostDetailScreen />} />
             <Route path="share" element={<ShareScreen />} />

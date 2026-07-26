@@ -30,6 +30,8 @@ backend/
 | `comments` INSERT | `notify-comment` | 게시물 작성자 (본인 댓글 제외) | `migrations/0002_push.sql` |
 | `posts` INSERT | `notify-post` | 작성자를 제외한 모든 구독자 | `migrations/0004_notify_post.sql` |
 
+습관 인증(`kind='habit'`)과 공유 일기(`kind='diary'`)를 `posts` 한 테이블에 담고, 피드는 두 종류를 시간순으로 함께 보여준다 (`migrations/0005_diary.sql`).
+
 배포·시크릿:
 ```bash
 supabase functions deploy notify-comment notify-post --project-ref tyervopkkaitmeerwdru
@@ -40,9 +42,9 @@ supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=ma
 - `profiles`: device_id(PK), nickname(UNIQUE), created_at
 - `habits`: id, owner_id(FK profiles), name, emoji, color, created_at, archived_at
 - `completions`: id, habit_id(FK), owner_id, day_key('YYYY-MM-DD'), created_at, **UNIQUE(habit_id, day_key)**
-- `posts`: id, owner_id, habit_name(스냅샷), streak_count, caption, image_url(nullable), day_key, created_at
+- `posts`: id, owner_id, **kind**('habit'|'diary'), habit_name(스냅샷, habit만), streak_count, **title/weather/entry_date**(diary만), caption(본문), image_url(nullable), day_key, created_at
 - `comments`: id, post_id(FK), author_id, body, created_at
-- 뷰 `feed_posts`: posts + profiles(nickname) + 댓글수 집계
+- 뷰 `feed_posts`: posts + profiles(nickname) + 댓글수 집계 (습관 인증·일기 모두 포함)
 - (2차) `push_tokens`: device_id, expo_push_token, updated_at
 - (2차) `web_push_subscriptions`: device_id, subscription(jsonb), updated_at
 

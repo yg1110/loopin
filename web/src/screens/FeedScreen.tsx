@@ -17,7 +17,7 @@ export function FeedScreen() {
         <EmptyState
           icon={Globe}
           title="아직 게시물이 없어요"
-          subtitle="습관을 체크하고 첫 인증을 공유해보세요!"
+          subtitle="습관 인증이나 일기를 올려보세요!"
         />
       ) : (
         posts.map((post) => (

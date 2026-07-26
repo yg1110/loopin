@@ -1,6 +1,7 @@
-import { Plus, Sprout } from 'lucide-react';
+import { BookOpen, ListChecks, Sprout } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { EmptyState } from '@/components/EmptyState';
+import { FabMenu } from '@/components/FabMenu';
 import { HabitCard } from '@/components/HabitCard';
 import { habitStatus, useCompletions, useHabits, useToggleToday } from '@/features/habits/hooks';
 
@@ -31,7 +32,7 @@ export function HomeScreen() {
           <EmptyState
             icon={Sprout}
             title="아직 습관이 없어요"
-            subtitle="오른쪽 아래 + 버튼으로 첫 습관을 만들어보세요."
+            subtitle="오른쪽 아래 + 버튼으로 습관을 만들거나 일기를 써보세요."
           />
         ) : (
           habits.map((habit) => {
@@ -51,17 +52,22 @@ export function HomeScreen() {
         )}
       </div>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-20 z-10">
-        <div className="mx-auto flex max-w-md justify-end px-4">
-          <button
-            onClick={() => navigate('/new-habit')}
-            className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg"
-            aria-label="습관 추가"
-          >
-            <Plus size={30} />
-          </button>
-        </div>
-      </div>
+      <FabMenu
+        actions={[
+          {
+            icon: BookOpen,
+            label: '일기 쓰기',
+            color: 'bg-violet-500',
+            onClick: () => navigate('/new-diary'),
+          },
+          {
+            icon: ListChecks,
+            label: '습관 추가',
+            color: 'bg-emerald-500',
+            onClick: () => navigate('/new-habit'),
+          },
+        ]}
+      />
     </div>
   );
 }

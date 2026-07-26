@@ -16,8 +16,10 @@ import { allDeviceIdsExcept, sendPush } from '../_shared/push.ts';
 type PostRecord = {
   id: string;
   owner_id: string;
-  habit_name: string;
+  kind?: 'habit' | 'diary' | null;
+  habit_name: string | null;
   streak_count: number;
+  title?: string | null;
   caption: string | null;
 };
 
@@ -39,11 +41,15 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     const nickname = owner?.nickname ?? '누군가';
-    const streak = record.streak_count > 0 ? ` (${record.streak_count}일 연속)` : '';
-    const title = `${nickname}님이 인증을 올렸어요`;
-    const body = record.caption?.trim()
-      ? `${record.habit_name}${streak} — ${record.caption.trim()}`
-      : `${record.habit_name}${streak}`;
+    const isDiary = record.kind === 'diary';
+    const caption = record.caption?.trim();
+
+    // 습관 인증: "물 2L 마시기 (3일 연속) — 한마디"
+    // 일기:      "제목 — 본문 앞부분"
+    const headline = isDiary ? (record.title ?? '일기') : record.habit_name ?? '습관';
+    const streak = !isDiary && record.streak_count > 0 ? ` (${record.streak_count}일 연속)` : '';
+    const title = `${nickname}님이 ${isDiary ? '일기를' : '인증을'} 올렸어요`;
+    const body = caption ? `${headline}${streak} — ${caption}` : `${headline}${streak}`;
 
     const targets = await allDeviceIdsExcept(supabase, record.owner_id);
     const summary = await sendPush(supabase, targets, {

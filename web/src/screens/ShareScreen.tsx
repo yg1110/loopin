@@ -38,6 +38,7 @@ export function ShareScreen() {
     try {
       await createPost.mutateAsync({
         post: {
+          kind: 'habit',
           habitName: habit.name,
           streakCount: current,
           caption: caption.trim() || null,

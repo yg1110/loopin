@@ -1,12 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '@/lib/supabase';
-import type { FeedPost } from '@/types';
+import type { FeedPost, PostKind } from '@/types';
 
 type FeedRow = {
   id: string;
   owner_id: string;
-  habit_name: string;
+  kind: PostKind | null;
+  habit_name: string | null;
   streak_count: number;
+  title: string | null;
+  weather: string | null;
+  entry_date: string | null;
   caption: string | null;
   image_url: string | null;
   day_key: string;
@@ -20,8 +24,13 @@ function mapFeed(r: FeedRow): FeedPost {
     id: r.id,
     ownerId: r.owner_id,
     nickname: r.nickname,
+    // kind 컬럼이 없던 시절 데이터/마이그레이션 이전 상태 대비 기본값 habit
+    kind: r.kind ?? 'habit',
     habitName: r.habit_name,
     streakCount: r.streak_count,
+    title: r.title,
+    weather: r.weather,
+    entryDate: r.entry_date,
     caption: r.caption,
     imageUrl: r.image_url,
     dayKey: r.day_key,
@@ -59,8 +68,14 @@ export async function uploadPostImage(deviceId: string, file: File): Promise<str
 }
 
 export type CreatePostInput = {
-  habitName: string;
-  streakCount: number;
+  kind: PostKind;
+  /** kind='habit' 필수 */
+  habitName?: string | null;
+  streakCount?: number;
+  /** kind='diary' 필수 */
+  title?: string | null;
+  weather?: string | null;
+  entryDate?: string | null;
   caption?: string | null;
   imageUrl?: string | null;
   dayKey: string;
@@ -69,8 +84,12 @@ export type CreatePostInput = {
 export async function createPost(ownerId: string, input: CreatePostInput): Promise<void> {
   const { error } = await supabase.from('posts').insert({
     owner_id: ownerId,
-    habit_name: input.habitName,
-    streak_count: input.streakCount,
+    kind: input.kind,
+    habit_name: input.habitName ?? null,
+    streak_count: input.streakCount ?? 0,
+    title: input.title ?? null,
+    weather: input.weather ?? null,
+    entry_date: input.entryDate ?? null,
     caption: input.caption ?? null,
     image_url: input.imageUrl ?? null,
     day_key: input.dayKey,
