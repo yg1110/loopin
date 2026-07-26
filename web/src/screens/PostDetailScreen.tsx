@@ -86,7 +86,7 @@ export function PostDetailScreen() {
         className="flex flex-none items-center gap-2 border-t border-gray-100 bg-white p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
       >
         <input
-          className="flex-1 rounded-full border border-gray-300 px-4 py-2.5 text-[15px] outline-none focus:border-blue-500"
+          className="flex-1 rounded-full border border-gray-300 px-4 py-2.5 text-base outline-none focus:border-blue-500"
           placeholder="댓글 달기..."
           value={text}
           onChange={(e) => setText(e.target.value)}

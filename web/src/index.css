@@ -12,6 +12,24 @@ body,
   overflow-x: hidden;
 }
 
+html {
+  /* iOS 더블탭 확대 방지 */
+  touch-action: manipulation;
+  /* 기기 방향 전환 시 텍스트 자동 확대 방지 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/*
+ * iOS Safari는 폰트 크기가 16px보다 작은 입력 요소에 포커스가 가면
+ * 화면을 자동으로 확대한다. 모든 입력 요소의 최소 크기를 16px로 강제한다.
+ */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
 body {
   margin: 0;
   /* 키보드가 떠도 body 자체가 스크롤되지 않도록 고정 */
