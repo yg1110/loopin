@@ -16,8 +16,24 @@
 ## 구조
 ```
 backend/
-├─ migrations/     # SQL 스키마·RLS·뷰 (profiles, habits, completions, posts, comments)
+├─ migrations/            # SQL 스키마·RLS·뷰 (profiles, habits, completions, posts, comments)
+├─ supabase/functions/
+│  ├─ _shared/push.ts     # 푸시 발송 공통 모듈 (Expo + Web Push)
+│  ├─ notify-comment/     # 댓글 INSERT → 게시물 작성자에게 푸시
+│  └─ notify-post/        # 게시물 INSERT → 작성자 제외 전원에게 푸시(브로드캐스트)
 └─ README.md
+```
+
+### 푸시 알림
+| 트리거 | 함수 | 수신자 | 웹훅 SQL |
+| --- | --- | --- | --- |
+| `comments` INSERT | `notify-comment` | 게시물 작성자 (본인 댓글 제외) | `migrations/0002_push.sql` |
+| `posts` INSERT | `notify-post` | 작성자를 제외한 모든 구독자 | `migrations/0004_notify_post.sql` |
+
+배포·시크릿:
+```bash
+supabase functions deploy notify-comment notify-post --project-ref tyervopkkaitmeerwdru
+supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=mailto:you@example.com
 ```
 
 ## 데이터 모델
@@ -28,6 +44,7 @@ backend/
 - `comments`: id, post_id(FK), author_id, body, created_at
 - 뷰 `feed_posts`: posts + profiles(nickname) + 댓글수 집계
 - (2차) `push_tokens`: device_id, expo_push_token, updated_at
+- (2차) `web_push_subscriptions`: device_id, subscription(jsonb), updated_at
 
 ## RLS / Storage
 - 모든 테이블 RLS 허용형(anon 전권, MVP) — 배포 전 강화

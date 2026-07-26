@@ -51,11 +51,11 @@ export function ProfileScreen() {
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-500 py-3.5 text-[15px] font-semibold text-white disabled:opacity-50"
           >
             <Bell size={18} />
-            {busy ? '설정 중…' : '댓글 알림 켜기'}
+            {busy ? '설정 중…' : '알림 켜기'}
           </button>
         )}
         <p className="mt-2 text-center text-xs text-gray-400">
-          내 게시물에 댓글이 달리면 알림을 받아요.
+          새 인증이 올라오거나 내 게시물에 댓글이 달리면 알림을 받아요.
           <br />
           (iOS는 홈 화면에 추가 후 사용)
         </p>
