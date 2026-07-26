@@ -65,6 +65,18 @@ export async function createHabit(ownerId: string, input: HabitInput): Promise<H
   return mapHabit(data as HabitRow);
 }
 
+export async function updateHabit(habitId: string, input: HabitInput): Promise<void> {
+  const { error } = await supabase
+    .from('habits')
+    .update({
+      name: input.name,
+      emoji: input.emoji ?? null,
+      color: input.color ?? null,
+    })
+    .eq('id', habitId);
+  if (error) throw error;
+}
+
 export async function archiveHabit(habitId: string): Promise<void> {
   const { error } = await supabase
     .from('habits')

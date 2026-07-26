@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { MessageCircle, Send } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { MessageCircle, Pencil, Send } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
 import { PostHeader, PostTitle } from '@/components/FeedCard';
 import { CommentItem } from '@/components/CommentItem';
 import { EmptyState } from '@/components/EmptyState';
 import { usePost } from '@/features/feed/hooks';
 import { useComments, useCreateComment } from '@/features/comments/hooks';
+import { useSession } from '@/store/session';
 
 export function PostDetailScreen() {
   const { id = '' } = useParams();
+  const navigate = useNavigate();
+  const deviceId = useSession((s) => s.deviceId);
   const postQ = usePost(id);
   const commentsQ = useComments(id);
   const createComment = useCreateComment(id);
@@ -29,6 +32,7 @@ export function PostDetailScreen() {
   }
 
   const post = postQ.data;
+  const canEdit = !!post && post.kind === 'diary' && post.ownerId === deviceId;
 
   return (
     <div className="flex h-full flex-col">
@@ -52,7 +56,19 @@ export function PostDetailScreen() {
               {post.imageUrl ? (
                 <img src={post.imageUrl} alt="" className="aspect-[4/3] w-full rounded-xl bg-gray-100 object-cover" />
               ) : null}
-              <p className="pt-1 text-sm font-bold text-gray-700">댓글 {post.commentCount}</p>
+              <div className="flex items-center pt-1">
+                <p className="text-sm font-bold text-gray-700">댓글 {post.commentCount}</p>
+                <span className="flex-1" />
+                {canEdit ? (
+                  <button
+                    onClick={() => navigate(`/post/${post.id}/edit`)}
+                    className="flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600"
+                  >
+                    <Pencil size={13} />
+                    수정
+                  </button>
+                ) : null}
+              </div>
             </div>
 
             <div>

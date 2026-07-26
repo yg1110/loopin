@@ -9,6 +9,7 @@ import {
   fetchCompletions,
   fetchHabits,
   toggleToday,
+  updateHabit,
   type HabitInput,
 } from './api';
 
@@ -27,6 +28,15 @@ export function useCreateHabit() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: HabitInput) => createHabit(deviceId, input),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['habits', deviceId] }),
+  });
+}
+
+export function useUpdateHabit(habitId: string) {
+  const deviceId = useSession((s) => s.deviceId);
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: HabitInput) => updateHabit(habitId, input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['habits', deviceId] }),
   });
 }

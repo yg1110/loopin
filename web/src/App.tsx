@@ -9,8 +9,8 @@ import { OnboardingScreen } from '@/screens/OnboardingScreen';
 import { HomeScreen } from '@/screens/HomeScreen';
 import { FeedScreen } from '@/screens/FeedScreen';
 import { ProfileScreen } from '@/screens/ProfileScreen';
-import { NewHabitScreen } from '@/screens/NewHabitScreen';
-import { NewDiaryScreen } from '@/screens/NewDiaryScreen';
+import { HabitFormScreen } from '@/screens/HabitFormScreen';
+import { DiaryFormScreen } from '@/screens/DiaryFormScreen';
 import { CourseScreen } from '@/screens/CourseScreen';
 import { CourseFormScreen } from '@/screens/CourseFormScreen';
 import { HabitDetailScreen } from '@/screens/HabitDetailScreen';
@@ -83,8 +83,10 @@ export default function App() {
               <Route path="course" element={<CourseScreen />} />
               <Route path="profile" element={<ProfileScreen />} />
             </Route>
-            <Route path="new-habit" element={<NewHabitScreen />} />
-            <Route path="new-diary" element={<NewDiaryScreen />} />
+            <Route path="new-habit" element={<HabitFormScreen />} />
+            <Route path="habit/:id/edit" element={<HabitFormScreen />} />
+            <Route path="new-diary" element={<DiaryFormScreen />} />
+            <Route path="post/:id/edit" element={<DiaryFormScreen />} />
             <Route path="new-course" element={<CourseFormScreen />} />
             <Route path="course/:id/edit" element={<CourseFormScreen />} />
             <Route path="habit/:id" element={<HabitDetailScreen />} />

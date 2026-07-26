@@ -96,3 +96,27 @@ export async function createPost(ownerId: string, input: CreatePostInput): Promi
   });
   if (error) throw error;
 }
+
+export type UpdatePostInput = {
+  title?: string | null;
+  weather?: string | null;
+  entryDate?: string | null;
+  caption?: string | null;
+  imageUrl?: string | null;
+  dayKey?: string;
+};
+
+/** 게시물 수정 (일기 필드 위주). 전달된 필드만 반영한다. */
+export async function updatePost(id: string, input: UpdatePostInput): Promise<void> {
+  const patch: Record<string, unknown> = {};
+  if (input.title !== undefined) patch.title = input.title ?? null;
+  if (input.weather !== undefined) patch.weather = input.weather ?? null;
+  if (input.entryDate !== undefined) patch.entry_date = input.entryDate ?? null;
+  if (input.caption !== undefined) patch.caption = input.caption ?? null;
+  if (input.imageUrl !== undefined) patch.image_url = input.imageUrl ?? null;
+  if (input.dayKey !== undefined) patch.day_key = input.dayKey;
+  if (Object.keys(patch).length === 0) return;
+
+  const { error } = await supabase.from('posts').update(patch).eq('id', id);
+  if (error) throw error;
+}

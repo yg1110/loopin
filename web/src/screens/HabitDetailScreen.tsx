@@ -58,9 +58,16 @@ export function HabitDetailScreen() {
         </div>
 
         <button
+          onClick={() => navigate(`/habit/${habit.id}/edit`)}
+          className="mt-8 rounded-xl border border-blue-200 py-3.5 text-[15px] font-semibold text-blue-600"
+        >
+          습관 수정
+        </button>
+
+        <button
           onClick={onArchive}
           disabled={archive.isPending}
-          className="mt-8 rounded-xl border border-red-200 py-3.5 text-[15px] font-semibold text-red-500"
+          className="rounded-xl border border-red-200 py-3.5 text-[15px] font-semibold text-red-500"
         >
           습관 보관
         </button>
