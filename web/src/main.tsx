@@ -4,9 +4,9 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import App from './App.tsx';
 import { queryClient } from '@/lib/queryClient';
-import { initViewportHeight } from '@/lib/viewport';
+import { initViewportFix } from '@/lib/viewport';
 
-initViewportHeight();
+initViewportFix();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

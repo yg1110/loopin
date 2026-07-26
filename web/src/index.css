@@ -8,11 +8,14 @@ html,
 body,
 #root {
   height: 100%;
-  /* 가로 스크롤 방지 */
+  width: 100%;
+  /* 가로 스크롤·좌우 밀림 방지 */
+  max-width: 100%;
   overflow-x: hidden;
 }
 
-html {
+html,
+body {
   /* iOS 더블탭 확대 방지 */
   touch-action: manipulation;
   /* 기기 방향 전환 시 텍스트 자동 확대 방지 */
@@ -23,11 +26,16 @@ html {
 /*
  * iOS Safari는 폰트 크기가 16px보다 작은 입력 요소에 포커스가 가면
  * 화면을 자동으로 확대한다. 모든 입력 요소의 최소 크기를 16px로 강제한다.
+ * (Tailwind 유틸리티는 @layer utilities 안에 있고 이 규칙은 레이어 밖이라
+ *  text-[13px] 같은 유틸리티보다 우선한다 — 확대 방지가 항상 이긴다.)
  */
 input,
 textarea,
-select {
+select,
+[contenteditable] {
   font-size: 16px;
+  /* 확대 대신 커서만 이동하도록 */
+  touch-action: manipulation;
 }
 
 body {
