@@ -1,4 +1,4 @@
-import { Check, ExternalLink, MapPin, Trash2 } from 'lucide-react';
+import { Check, ExternalLink, MapPin, Pencil, Trash2 } from 'lucide-react';
 import type { DateCourse } from '@/types';
 import { timeAgo } from '@/lib/time';
 import { findCategory, linkLabel, mapSearchUrl, normalizeLink } from '@/lib/courseCategory';
@@ -8,12 +8,14 @@ export function CourseCard({
   mine,
   busy,
   onToggleVisited,
+  onEdit,
   onDelete,
 }: {
   course: DateCourse;
   mine: boolean;
   busy?: boolean;
   onToggleVisited: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }) {
   const category = findCategory(course.category);
@@ -99,6 +101,14 @@ export function CourseCard({
         {mine ? (
           <>
             <span className="flex-1" />
+            <button
+              onClick={onEdit}
+              disabled={busy}
+              aria-label="코스 수정"
+              className="flex h-7 w-7 items-center justify-center rounded-full text-gray-400"
+            >
+              <Pencil size={15} />
+            </button>
             <button
               onClick={onDelete}
               disabled={busy}

@@ -12,7 +12,7 @@ import { ProfileScreen } from '@/screens/ProfileScreen';
 import { NewHabitScreen } from '@/screens/NewHabitScreen';
 import { NewDiaryScreen } from '@/screens/NewDiaryScreen';
 import { CourseScreen } from '@/screens/CourseScreen';
-import { NewCourseScreen } from '@/screens/NewCourseScreen';
+import { CourseFormScreen } from '@/screens/CourseFormScreen';
 import { HabitDetailScreen } from '@/screens/HabitDetailScreen';
 import { PostDetailScreen } from '@/screens/PostDetailScreen';
 import { ShareScreen } from '@/screens/ShareScreen';
@@ -85,7 +85,8 @@ export default function App() {
             </Route>
             <Route path="new-habit" element={<NewHabitScreen />} />
             <Route path="new-diary" element={<NewDiaryScreen />} />
-            <Route path="new-course" element={<NewCourseScreen />} />
+            <Route path="new-course" element={<CourseFormScreen />} />
+            <Route path="course/:id/edit" element={<CourseFormScreen />} />
             <Route path="habit/:id" element={<HabitDetailScreen />} />
             <Route path="post/:id" element={<PostDetailScreen />} />
             <Route path="share" element={<ShareScreen />} />

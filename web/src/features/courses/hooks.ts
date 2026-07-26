@@ -3,13 +3,19 @@ import { useSession } from '@/store/session';
 import {
   createCourse,
   deleteCourse,
+  fetchCourse,
   fetchCourses,
   setCourseVisited,
+  updateCourse,
   type CourseInput,
 } from './api';
 
 export function useCourses() {
   return useQuery({ queryKey: ['courses'], queryFn: () => fetchCourses() });
+}
+
+export function useCourse(id: string) {
+  return useQuery({ queryKey: ['course', id], queryFn: () => fetchCourse(id), enabled: !!id });
 }
 
 export function useCreateCourse() {
@@ -18,6 +24,17 @@ export function useCreateCourse() {
   return useMutation({
     mutationFn: (input: CourseInput) => createCourse(deviceId, input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['courses'] }),
+  });
+}
+
+export function useUpdateCourse(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CourseInput) => updateCourse(id, input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['courses'] });
+      qc.invalidateQueries({ queryKey: ['course', id] });
+    },
   });
 }
 

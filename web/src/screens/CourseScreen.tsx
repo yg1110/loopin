@@ -119,6 +119,7 @@ export function CourseScreen() {
               onToggleVisited={() =>
                 setVisited.mutate({ id: course.id, visited: !course.visited })
               }
+              onEdit={() => navigate(`/course/${course.id}/edit`)}
               onDelete={() => {
                 if (window.confirm(`'${course.name}' 코스를 삭제할까요?`)) remove.mutate(course.id);
               }}

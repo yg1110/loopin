@@ -39,6 +39,16 @@ export async function fetchCourses(limit = 200): Promise<DateCourse[]> {
   return (data as CourseRow[]).map(mapCourse);
 }
 
+export async function fetchCourse(id: string): Promise<DateCourse | null> {
+  const { data, error } = await supabase
+    .from('date_course_list')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapCourse(data as CourseRow) : null;
+}
+
 export type CourseInput = {
   name: string;
   category: string;
@@ -56,6 +66,20 @@ export async function createCourse(ownerId: string, input: CourseInput): Promise
     link: input.link || null,
     memo: input.memo || null,
   });
+  if (error) throw error;
+}
+
+export async function updateCourse(id: string, input: CourseInput): Promise<void> {
+  const { error } = await supabase
+    .from('date_courses')
+    .update({
+      name: input.name,
+      category: input.category,
+      place: input.place || null,
+      link: input.link || null,
+      memo: input.memo || null,
+    })
+    .eq('id', id);
   if (error) throw error;
 }
 
