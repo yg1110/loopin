@@ -1,10 +1,17 @@
 import { create } from 'zustand';
-import { clearNickname, getOrCreateDeviceId, getStoredNickname, saveNickname } from '@/lib/identity';
+import {
+  clearNickname,
+  getOrCreateDeviceId,
+  getStoredNickname,
+  saveDeviceId,
+  saveNickname,
+} from '@/lib/identity';
 
 type SessionState = {
   deviceId: string;
   nickname: string | null;
-  setNickname: (nickname: string) => void;
+  /** 닉네임 로그인: 서버가 확정한 device_id로 신원을 갈아끼운다. */
+  signIn: (deviceId: string, nickname: string) => void;
   logout: () => void;
 };
 
@@ -12,9 +19,10 @@ type SessionState = {
 export const useSession = create<SessionState>((set) => ({
   deviceId: getOrCreateDeviceId(),
   nickname: getStoredNickname(),
-  setNickname: (nickname) => {
+  signIn: (deviceId, nickname) => {
+    saveDeviceId(deviceId);
     saveNickname(nickname);
-    set({ nickname });
+    set({ deviceId, nickname });
   },
   logout: () => {
     clearNickname();

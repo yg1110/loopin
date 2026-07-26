@@ -11,6 +11,14 @@ export function getOrCreateDeviceId(): string {
   return id;
 }
 
+/**
+ * 이 기기가 사용할 신원(device_id)을 교체해 영속.
+ * 기존 닉네임 프로필로 로그인할 때 그 프로필의 device_id를 그대로 이어받는다.
+ */
+export function saveDeviceId(deviceId: string): void {
+  localStorage.setItem(DEVICE_ID_KEY, deviceId);
+}
+
 export function getStoredNickname(): string | null {
   return localStorage.getItem(NICKNAME_KEY);
 }

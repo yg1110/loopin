@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RotateCw } from 'lucide-react';
-import { ensureProfile } from '@/features/identity/api';
+import { signInWithNickname } from '@/features/identity/api';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { useSession } from '@/store/session';
 
@@ -11,7 +11,7 @@ const MAX = 20;
 export function OnboardingScreen() {
   const navigate = useNavigate();
   const deviceId = useSession((s) => s.deviceId);
-  const setNickname = useSession((s) => s.setNickname);
+  const signIn = useSession((s) => s.signIn);
 
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -33,15 +33,12 @@ export function OnboardingScreen() {
     }
     setSubmitting(true);
     try {
-      const result = await ensureProfile(deviceId, trimmed);
-      if (!result.ok) {
-        setError('이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.');
-        return;
-      }
-      setNickname(trimmed);
+      // 이미 있는 닉네임이면 그 프로필로 로그인, 없으면 새로 만든다.
+      const { deviceId: resolvedDeviceId } = await signInWithNickname(deviceId, trimmed);
+      signIn(resolvedDeviceId, trimmed);
       navigate('/', { replace: true });
     } catch (err) {
-      setError('등록 중 오류가 발생했어요. 네트워크를 확인해주세요.');
+      setError('로그인 중 오류가 발생했어요. 네트워크를 확인해주세요.');
       console.error(err);
     } finally {
       setSubmitting(false);
@@ -57,6 +54,8 @@ export function OnboardingScreen() {
         <h1 className="text-center text-2xl font-bold text-gray-900">Loopin에 오신 걸 환영해요</h1>
         <p className="mb-3 text-center text-[15px] text-gray-500">
           피드에 표시될 닉네임을 정해주세요.
+          <br />
+          이미 쓰던 닉네임이면 그 계정으로 이어져요.
         </p>
 
         <input
@@ -77,7 +76,7 @@ export function OnboardingScreen() {
           disabled={!validLength || submitting}
           className="mt-2 rounded-xl bg-blue-500 py-4 text-base font-semibold text-white disabled:opacity-50"
         >
-          {submitting ? '등록 중…' : '시작하기'}
+          {submitting ? '로그인 중…' : '시작하기'}
         </button>
       </form>
     </div>
