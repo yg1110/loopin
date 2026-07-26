@@ -26,7 +26,9 @@ export function FeedCard({ post, onOpen }: { post: FeedPost; onOpen: () => void 
         <span className="text-[13px] font-normal text-gray-400">습관 </span>
         {post.habitName}
       </p>
-      {post.caption ? <p className="text-[15px] leading-relaxed text-gray-700">{post.caption}</p> : null}
+      {post.caption ? <p className="text-[15px] leading-relaxed break-words whitespace-pre-line text-gray-700">
+          {post.caption}
+        </p> : null}
       {post.imageUrl ? (
         <img
           src={post.imageUrl}

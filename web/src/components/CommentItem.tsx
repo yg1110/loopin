@@ -12,7 +12,9 @@ export function CommentItem({ comment }: { comment: Comment }) {
           <span className="text-sm font-semibold text-gray-900">{comment.nickname}</span>
           <span className="text-xs text-gray-400">{timeAgo(comment.createdAt)}</span>
         </div>
-        <p className="text-[15px] leading-snug text-gray-700">{comment.body}</p>
+        <p className="text-[15px] leading-snug break-words whitespace-pre-line text-gray-700">
+          {comment.body}
+        </p>
       </div>
     </div>
   );

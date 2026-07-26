@@ -60,7 +60,9 @@ export function PostDetailScreen() {
                 {post.habitName}
               </p>
               {post.caption ? (
-                <p className="text-[15px] leading-relaxed text-gray-700">{post.caption}</p>
+                <p className="text-[15px] leading-relaxed break-words whitespace-pre-line text-gray-700">
+                  {post.caption}
+                </p>
               ) : null}
               {post.imageUrl ? (
                 <img src={post.imageUrl} alt="" className="aspect-[4/3] w-full rounded-xl bg-gray-100 object-cover" />
