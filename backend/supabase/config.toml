@@ -2,6 +2,13 @@
 # 참고: DB 스키마는 대시보드 SQL 에디터로 backend/migrations/*.sql 적용.
 project_id = "loopin"
 
-# notify-comment는 DB 웹훅에서 호출되므로 JWT 검증 비활성화.
+# 알림 함수들은 모두 DB 트리거(pg_net)에서 인증 헤더 없이 호출되므로 JWT 검증 비활성화.
+# 이 설정을 빼먹고 배포하면 트리거 호출이 401로 조용히 거부된다.
 [functions.notify-comment]
+verify_jwt = false
+
+[functions.notify-post]
+verify_jwt = false
+
+[functions.notify-course]
 verify_jwt = false
