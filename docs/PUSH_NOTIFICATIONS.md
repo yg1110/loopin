@@ -100,11 +100,45 @@ iOS 주의: Safari는 **홈 화면에 추가된 PWA에서만** Web Push가 동�
 
 ## 3. 문제: 댓글 알림은 오는데 피드 게시물 알림이 안 온다
 
-댓글이 정상이라는 것은 **클라이언트 구독·서비스워커·VAPID 키·`sendPush()` 발송 경로가 모두 정상**이라는 뜻이다. 즉 공통 구간은 무죄이고, 원인은 `posts` 전용 구간(트리거 등록 / 함수 배포 / 수신자 계산) 중 하나다. 가능성 순으로:
+### 결론 (2026-07-29 확인) — `notify-post` / `notify-course` 함수가 배포되어 있지 않다
 
-### 원인 ① `posts` 트리거가 DB에 등록되어 있지 않다 (가장 유력)
+엔드포인트를 직접 찔러 본 결과:
 
-`0002_push.sql`의 댓글 트리거 SQL은 **전부 주석 처리**되어 있다. 그런데도 댓글 알림이 동작한다는 것은, 댓글 훅만 대시보드 **Database → Webhooks GUI**로 손수 만들어 뒀다는 뜻이다. `notify-post` 트리거는 `0004`/`0007` SQL로만 존재하므로, 그 파일을 실행한 적이 없으면 `posts`에 INSERT가 나도 **아무 HTTP 호출도 일어나지 않는다.**
+```bash
+for fn in notify-comment notify-post notify-course; do
+  printf "%-16s " "$fn"
+  curl -s -o /dev/null -w "%{http_code}\n" -X POST \
+    "https://tyervopkkaitmeerwdru.functions.supabase.co/$fn" \
+    -H 'Content-Type: application/json' -d '{}'
+done
+```
+
+```
+notify-comment   200   ← 배포됨 (그래서 댓글 알림은 정상)
+notify-post      404   ← 미배포
+notify-course    404   ← 미배포
+```
+
+트리거(`on_post_created`)는 정상 등록되어 있어 `posts` INSERT마다 `pg_net`이 POST를 보내지만, **함수가 없어 404를 받고 그대로 끝난다.** `notify_edge_function()`은 `perform net.http_post(...)`로 응답을 버리므로 앱에도 DB에도 오류가 남지 않아 "조용히 안 오는" 증상이 된다. 데이트 코스 알림도 같은 이유로 안 간다.
+
+**해결:**
+
+```bash
+cd backend
+supabase functions deploy notify-post notify-course --project-ref tyervopkkaitmeerwdru
+```
+
+배포 후 `curl`이 200을 주면 정상이고, 글을 하나 올려 확인한다. 겸사겸사 `notify-comment`도 같이 배포해 두면 `b06b50e`의 `_shared/push.ts` 변경분이 반영된다.
+
+> 함수를 새로 만들 때마다 **배포는 마이그레이션과 별개**다. SQL만 실행하고 `functions deploy`를 빼먹으면 정확히 이 상태가 된다.
+
+---
+
+아래는 같은 증상에서 확인해 볼 나머지 원인들이다. 댓글이 정상이라는 것은 **클라이언트 구독·서비스워커·VAPID 키·`sendPush()` 발송 경로가 모두 정상**이라는 뜻이므로, 원인은 항상 `posts` 전용 구간(트리거 등록 / 함수 배포 / 수신자 계산)에 있다.
+
+### 원인 ① `posts` 트리거가 DB에 등록되어 있지 않다
+
+`0002_push.sql`의 댓글 트리거 SQL은 **전부 주석 처리**되어 있다. `notify-post` 트리거는 `0004`/`0007` SQL로만 존재하므로, 그 파일을 실행한 적이 없으면 `posts`에 INSERT가 나도 **아무 HTTP 호출도 일어나지 않는다.** (이번 건은 조회 결과 세 트리거가 모두 있어 해당 없음.)
 
 확인:
 
@@ -120,9 +154,9 @@ where not tgisinternal
 `on_post_created`가 없으면 확정. → `0007_push_triggers.sql` 실행.
 (GUI 훅 쪽도 대시보드 Database → Webhooks 목록에서 `posts` 행이 있는지 같이 본다.)
 
-### 원인 ② `notify-post` 함수가 배포되지 않았다
+### 원인 ② `notify-post` 함수가 배포되지 않았다 ← **이번 건의 실제 원인**
 
-댓글 함수만 배포한 상태일 수 있다. 대시보드 Edge Functions 목록에 `notify-post`, `notify-course`가 보이는지 확인하고, 없으면 2-2의 배포 명령을 실행한다.
+댓글 함수만 배포한 상태일 수 있다. 위 `curl` 한 줄이면 즉시 판별된다(404 = 미배포). 대시보드 Edge Functions 목록으로도 확인 가능하며, 없으면 2-2의 배포 명령을 실행한다.
 
 ### 원인 ③ 배포된 `notify-post`가 구버전이라 "작성자 제외"로 동작한다
 
@@ -137,9 +171,15 @@ where not tgisinternal
 
 ```sql
 select * from pg_extension where extname = 'pg_net';
--- 최근 호출 결과 (pg_net 큐)
-select id, url, status_code, error_msg, created
+-- 최근 호출 결과 (pg_net 응답 테이블에는 url 컬럼이 없다)
+select id, status_code, error_msg, created
 from net._http_response order by created desc limit 20;
+
+-- 어느 URL로 갔는지까지 보려면 요청 테이블과 조인
+select q.id, q.url, r.status_code, r.error_msg, r.created
+from net.http_request_queue q
+full join net._http_response r on r.id = q.id
+order by r.created desc nulls last limit 20;
 ```
 
 ### 원인 ⑤ 함수는 호출됐지만 내부에서 조용히 끝났다
@@ -161,11 +201,12 @@ supabase functions logs notify-post --project-ref tyervopkkaitmeerwdru
 
 ### 점검 순서 (요약)
 
-1. `pg_trigger` 조회 → `on_post_created` 존재? 없으면 `0007` 실행 ← **여기서 대부분 끝난다**
-2. Edge Functions 목록에 `notify-post` 존재? 없으면 배포
+1. **`curl`로 함수 상태 확인** (404면 미배포 — 가장 빠르고, 이번 건이 여기서 잡혔다)
+2. `pg_trigger` 조회 → `on_post_created` 존재? 없으면 `0007` 실행
 3. `b06b50e` 이후 재배포한 적 있나? 없으면 재배포 (원인 ③)
 4. `supabase functions logs notify-post` 로 `targets`/`webSent`/`errors` 확인
-5. `net._http_response` 로 트리거가 실제로 HTTP 호출을 했는지 확인
+5. `net._http_response` 로 트리거가 실제로 HTTP 호출을 했는지 / 어떤 상태코드를 받았는지 확인
+   (응답 행은 몇 시간 뒤 자동 삭제되고, `http_request_queue` 행은 처리 후 사라져 조인 결과가 비어 있을 수 있다)
 
 ### 수동 발송 테스트 (DB·트리거 우회)
 
@@ -189,3 +230,4 @@ curl -X POST https://tyervopkkaitmeerwdru.functions.supabase.co/notify-post \
 - 웹 푸시 payload는 `{ title, body, url }` 뿐이다. `data`(postId 등)는 Expo 쪽만 받는다.
 - 서비스워커 갱신은 `registerType: 'autoUpdate'`라 배포 후 다음 로드에 반영되지만, 이미 열린 탭은 갱신 전 SW를 쓸 수 있다.
 - 함수는 실패해도 200을 반환하므로, 문제 추적은 항상 **함수 로그**로 한다.
+- 트리거의 `notify_edge_function()`은 `perform net.http_post(...)`로 **응답을 버린다.** 함수가 404/401이어도 DB 쪽에는 흔적이 남지 않는다 — 새 알림을 붙였는데 조용하면 먼저 배포 여부부터 의심할 것.
