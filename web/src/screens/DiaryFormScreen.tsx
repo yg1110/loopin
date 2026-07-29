@@ -127,7 +127,10 @@ export function DiaryFormScreen() {
   return (
     <div className="flex h-full flex-col">
       <PageHeader title={editing ? '일기 수정' : '일기 쓰기'} />
-      <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-5">
+      <form
+        onSubmit={onSubmit}
+        className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
+      >
         <label className="mt-2 text-sm font-semibold text-gray-700">날짜</label>
         <input
           type="date"

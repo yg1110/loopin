@@ -84,7 +84,10 @@ export function CourseFormScreen() {
   return (
     <div className="flex h-full flex-col">
       <PageHeader title={editing ? '코스 수정' : '코스 추가'} />
-      <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-5">
+      <form
+        onSubmit={onSubmit}
+        className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
+      >
         <label className="mt-2 text-sm font-semibold text-gray-700">이름</label>
         <input
           className="rounded-xl border border-gray-300 px-3.5 py-3 text-base outline-none focus:border-blue-500"

@@ -2,6 +2,18 @@
 
 :root {
   color-scheme: light;
+
+  /*
+   * 하단 탭바 위에 겹쳐 띄우는 요소들(FAB, 설치 배너)의 기준 위치.
+   * 탭바는 아이콘 22 + gap 2 + 라벨 ~17 + py-2*2(16) + 상단 보더 1 ≈ 56px 이고,
+   * 여기에 iOS 홈 인디케이터 영역(env(safe-area-inset-bottom))이 더 붙는다.
+   * fixed 요소는 뷰포트 기준이라 이 값을 빼먹으면 노치 기기에서 탭바에 가려진다.
+   */
+  --tabbar-h: calc(3.5rem + env(safe-area-inset-bottom));
+  /* FAB: 탭바 위 24px */
+  --fab-bottom: calc(var(--tabbar-h) + 1.5rem);
+  /* 설치 배너: FAB(56px) 위 12px — 배너가 + 버튼을 덮지 않도록 */
+  --banner-bottom: calc(var(--fab-bottom) + 4.25rem);
 }
 
 html,

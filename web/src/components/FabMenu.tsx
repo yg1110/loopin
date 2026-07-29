@@ -38,7 +38,7 @@ export function FabMenu({ actions }: { actions: FabAction[] }) {
         }`}
       />
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-20 z-20">
+      <div className="pointer-events-none fixed inset-x-0 bottom-[var(--fab-bottom)] z-20">
         <div className="mx-auto flex max-w-md flex-col items-end gap-3 px-4">
           {/* 위로 하나씩 떠오르는 원형 버튼들 (아래쪽이 먼저) */}
           {actions.map((action, i) => {

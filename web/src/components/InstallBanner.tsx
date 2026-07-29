@@ -65,7 +65,7 @@ export function InstallBanner() {
   }
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-20 z-20">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[var(--banner-bottom)] z-20">
       <div className="mx-auto max-w-md px-3">
         <div className="pointer-events-auto flex items-center gap-3 rounded-2xl bg-gray-900 p-3 text-white shadow-xl">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500">

@@ -25,7 +25,8 @@ export function HomeScreen() {
 
   return (
     <div className="relative min-h-full">
-      <div className="flex flex-col gap-2.5 p-4">
+      {/* pb: 마지막 카드가 FAB에 가리지 않도록 여유를 둔다 */}
+      <div className="flex flex-col gap-2.5 p-4 pb-28">
         {loading ? (
           <p className="py-16 text-center text-sm text-gray-400">불러오는 중…</p>
         ) : habits.length === 0 ? (

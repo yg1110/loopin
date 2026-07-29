@@ -41,7 +41,8 @@ export function CourseScreen() {
 
   return (
     <div className="relative min-h-full">
-      <div className="flex flex-col gap-3 p-4">
+      {/* pb: 마지막 카드가 FAB에 가리지 않도록 여유를 둔다 */}
+      <div className="flex flex-col gap-3 p-4 pb-28">
         <div className="flex items-baseline justify-between">
           <h2 className="text-lg font-bold text-gray-900">데이트 코스</h2>
           {courses.length > 0 ? (
@@ -128,7 +129,7 @@ export function CourseScreen() {
         )}
       </div>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-20 z-10">
+      <div className="pointer-events-none fixed inset-x-0 bottom-[var(--fab-bottom)] z-20">
         <div className="mx-auto flex max-w-md justify-end px-4">
           <button
             onClick={() => navigate('/new-course')}

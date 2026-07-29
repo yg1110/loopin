@@ -1,28 +1,28 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { MessageCircle, Pencil, Send } from 'lucide-react';
-import { PageHeader } from '@/components/PageHeader';
-import { PostHeader, PostTitle } from '@/components/FeedCard';
-import { CommentItem } from '@/components/CommentItem';
-import { EmptyState } from '@/components/EmptyState';
-import { usePost } from '@/features/feed/hooks';
-import { useComments, useCreateComment } from '@/features/comments/hooks';
-import { useSession } from '@/store/session';
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { MessageCircle, Pencil, Send } from "lucide-react";
+import { PageHeader } from "@/components/PageHeader";
+import { PostHeader, PostTitle } from "@/components/FeedCard";
+import { CommentItem } from "@/components/CommentItem";
+import { EmptyState } from "@/components/EmptyState";
+import { usePost } from "@/features/feed/hooks";
+import { useComments, useCreateComment } from "@/features/comments/hooks";
+import { useSession } from "@/store/session";
 
 export function PostDetailScreen() {
-  const { id = '' } = useParams();
+  const { id = "" } = useParams();
   const navigate = useNavigate();
   const deviceId = useSession((s) => s.deviceId);
   const postQ = usePost(id);
   const commentsQ = useComments(id);
   const createComment = useCreateComment(id);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
 
   async function onSend(e: React.FormEvent) {
     e.preventDefault();
     const body = text.trim();
     if (!body) return;
-    setText('');
+    setText("");
     try {
       await createComment.mutateAsync(body);
     } catch (err) {
@@ -32,17 +32,21 @@ export function PostDetailScreen() {
   }
 
   const post = postQ.data;
-  const canEdit = !!post && post.kind === 'diary' && post.ownerId === deviceId;
+  const canEdit = !!post && post.kind === "diary" && post.ownerId === deviceId;
 
   return (
     <div className="flex h-full flex-col">
-      <PageHeader title={post?.kind === 'diary' ? '일기' : '게시물'} />
+      <PageHeader title={post?.kind === "diary" ? "일기" : "게시물"} />
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {postQ.isLoading ? (
-          <p className="py-24 text-center text-sm text-gray-400">불러오는 중…</p>
+          <p className="py-24 text-center text-sm text-gray-400">
+            불러오는 중…
+          </p>
         ) : !post ? (
-          <p className="py-24 text-center text-sm text-gray-400">게시물을 찾을 수 없어요.</p>
+          <p className="py-24 text-center text-sm text-gray-400">
+            게시물을 찾을 수 없어요.
+          </p>
         ) : (
           <div className="p-4">
             <div className="flex flex-col gap-2.5 border-b border-gray-100 pb-3">
@@ -54,10 +58,16 @@ export function PostDetailScreen() {
                 </p>
               ) : null}
               {post.imageUrl ? (
-                <img src={post.imageUrl} alt="" className="aspect-[4/3] w-full rounded-xl bg-gray-100 object-cover" />
+                <img
+                  src={post.imageUrl}
+                  alt=""
+                  className="aspect-[4/3] w-full rounded-xl bg-gray-100 object-cover"
+                />
               ) : null}
               <div className="flex items-center pt-1">
-                <p className="text-sm font-bold text-gray-700">댓글 {post.commentCount}</p>
+                <p className="text-sm font-bold text-gray-700">
+                  댓글 {post.commentCount}
+                </p>
                 <span className="flex-1" />
                 {canEdit ? (
                   <button
@@ -73,11 +83,15 @@ export function PostDetailScreen() {
 
             <div>
               {commentsQ.isLoading ? (
-                <p className="py-6 text-center text-sm text-gray-400">불러오는 중…</p>
+                <p className="py-6 text-center text-sm text-gray-400">
+                  불러오는 중…
+                </p>
               ) : (commentsQ.data ?? []).length === 0 ? (
                 <EmptyState icon={MessageCircle} title="첫 댓글을 남겨보세요" />
               ) : (
-                commentsQ.data!.map((c) => <CommentItem key={c.id} comment={c} />)
+                commentsQ.data!.map((c) => (
+                  <CommentItem key={c.id} comment={c} />
+                ))
               )}
             </div>
           </div>
