@@ -26,6 +26,25 @@ body,
   overflow-x: hidden;
 }
 
+/*
+ * 스크롤바 숨김 (스크롤 동작 자체는 그대로).
+ * 모바일 앱처럼 보이도록 세로·가로 스크롤 영역 전부에 적용한다.
+ * 데스크톱 브라우저에서도 숨겨지므로, 스크롤 가능 여부는 콘텐츠가 잘려 보이는
+ * 것으로만 드러난다 — 가로 스크롤 목록(코스 분류 필터 등)은 마지막 항목이
+ * 살짝 걸치게 두어 더 있다는 걸 알 수 있게 한다.
+ */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 구형 Edge/IE */
+}
+
+*::-webkit-scrollbar {
+  /* Chrome / Safari / Edge */
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 html,
 body {
   /* iOS 더블탭 확대 방지 */
