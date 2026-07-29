@@ -2,11 +2,14 @@ import { Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { EmptyState } from '@/components/EmptyState';
 import { FeedCard } from '@/components/FeedCard';
-import { useFeed } from '@/features/feed/hooks';
+import { useDeletePost, useFeed } from '@/features/feed/hooks';
+import { useSession } from '@/store/session';
 
 export function FeedScreen() {
   const navigate = useNavigate();
+  const deviceId = useSession((s) => s.deviceId);
   const feedQ = useFeed();
+  const removePost = useDeletePost();
   const posts = feedQ.data ?? [];
 
   return (
@@ -21,7 +24,18 @@ export function FeedScreen() {
         />
       ) : (
         posts.map((post) => (
-          <FeedCard key={post.id} post={post} onOpen={() => navigate(`/post/${post.id}`)} />
+          <FeedCard
+            key={post.id}
+            post={post}
+            mine={post.ownerId === deviceId}
+            busy={removePost.isPending && removePost.variables?.id === post.id}
+            onOpen={() => navigate(`/post/${post.id}`)}
+            onDelete={() => {
+              const label = post.kind === 'diary' ? '일기를' : '인증을';
+              if (window.confirm(`이 ${label} 삭제할까요? 댓글도 함께 사라져요.`))
+                removePost.mutate({ id: post.id, imageUrl: post.imageUrl });
+            }}
+          />
         ))
       )}
     </div>

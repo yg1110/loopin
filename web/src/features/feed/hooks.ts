@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from '@/store/session';
 import {
   createPost,
+  deletePost,
   fetchFeed,
   fetchPost,
   updatePost,
@@ -37,6 +38,19 @@ export function useUpdatePost(id: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['feed'] });
       qc.invalidateQueries({ queryKey: ['post', id] });
+    },
+  });
+}
+
+/** 게시물 삭제. 사진이 있으면 스토리지 파일도 함께 정리한다. */
+export function useDeletePost() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (p: { id: string; imageUrl?: string | null }) => deletePost(p.id, p.imageUrl),
+    onSuccess: (_data, p) => {
+      qc.invalidateQueries({ queryKey: ['feed'] });
+      qc.removeQueries({ queryKey: ['post', p.id] });
+      qc.removeQueries({ queryKey: ['comments', p.id] });
     },
   });
 }

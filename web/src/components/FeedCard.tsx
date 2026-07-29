@@ -1,4 +1,4 @@
-import { Flame, MessageCircle } from 'lucide-react';
+import { Flame, MessageCircle, Trash2 } from 'lucide-react';
 import type { FeedPost } from '@/types';
 import { formatDiaryDate, timeAgo } from '@/lib/time';
 import { findWeather } from '@/lib/weather';
@@ -60,11 +60,34 @@ export function PostTitle({ post }: { post: FeedPost }) {
   );
 }
 
-export function FeedCard({ post, onOpen }: { post: FeedPost; onOpen: () => void }) {
+export function FeedCard({
+  post,
+  mine,
+  busy,
+  onOpen,
+  onDelete,
+}: {
+  post: FeedPost;
+  /** 본인 게시물이면 삭제 버튼 노출 */
+  mine?: boolean;
+  busy?: boolean;
+  onOpen: () => void;
+  onDelete?: () => void;
+}) {
+  // 카드 안에 삭제 버튼이 들어가므로 루트를 button 으로 둘 수 없다(버튼 중첩 불가).
+  // div + role/tabIndex 로 클릭·키보드 접근성을 유지한다.
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onOpen}
-      className="flex w-full flex-col gap-2.5 rounded-2xl border border-gray-100 bg-white p-3.5 text-left"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+      className="flex w-full cursor-pointer flex-col gap-2.5 rounded-2xl border border-gray-100 bg-white p-3.5 text-left"
     >
       <PostHeader post={post} />
       <PostTitle post={post} />
@@ -89,7 +112,23 @@ export function FeedCard({ post, onOpen }: { post: FeedPost; onOpen: () => void 
       <div className="flex items-center gap-1.5 pt-0.5 text-gray-500">
         <MessageCircle size={16} />
         <span className="text-sm">{post.commentCount}</span>
+        {mine && onDelete ? (
+          <>
+            <span className="flex-1" />
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              disabled={busy}
+              aria-label="게시물 삭제"
+              className="flex h-7 w-7 items-center justify-center rounded-full text-gray-400 disabled:opacity-50"
+            >
+              <Trash2 size={15} />
+            </button>
+          </>
+        ) : null}
       </div>
-    </button>
+    </div>
   );
 }

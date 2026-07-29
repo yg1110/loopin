@@ -97,6 +97,32 @@ export async function createPost(ownerId: string, input: CreatePostInput): Promi
   if (error) throw error;
 }
 
+const IMAGE_BUCKET = 'post-images';
+
+/** public URL에서 버킷 내부 경로(`{device_id}/{uuid}.jpg`)를 뽑는다. 못 뽑으면 null. */
+function imagePathFromUrl(url: string): string | null {
+  const marker = `/${IMAGE_BUCKET}/`;
+  const i = url.indexOf(marker);
+  if (i === -1) return null;
+  const path = url.slice(i + marker.length).split('?')[0];
+  return path ? decodeURIComponent(path) : null;
+}
+
+/**
+ * 게시물 삭제. 댓글은 FK on delete cascade 로 함께 지워진다.
+ * 첨부 사진은 스토리지에서 best-effort 로 지운다(실패해도 삭제는 성공 처리).
+ */
+export async function deletePost(id: string, imageUrl?: string | null): Promise<void> {
+  const { error } = await supabase.from('posts').delete().eq('id', id);
+  if (error) throw error;
+
+  if (!imageUrl) return;
+  const path = imagePathFromUrl(imageUrl);
+  if (!path) return;
+  const { error: storageError } = await supabase.storage.from(IMAGE_BUCKET).remove([path]);
+  if (storageError) console.warn('[Loopin] 사진 삭제 실패(게시물은 삭제됨):', storageError);
+}
+
 export type UpdatePostInput = {
   title?: string | null;
   weather?: string | null;

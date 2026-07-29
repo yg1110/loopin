@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { MessageCircle, Pencil, Send } from "lucide-react";
+import { MessageCircle, Pencil, Send, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { PostHeader, PostTitle } from "@/components/FeedCard";
 import { CommentItem } from "@/components/CommentItem";
 import { EmptyState } from "@/components/EmptyState";
-import { usePost } from "@/features/feed/hooks";
+import { useDeletePost, usePost } from "@/features/feed/hooks";
 import { useComments, useCreateComment } from "@/features/comments/hooks";
 import { useSession } from "@/store/session";
 
@@ -16,6 +16,7 @@ export function PostDetailScreen() {
   const postQ = usePost(id);
   const commentsQ = useComments(id);
   const createComment = useCreateComment(id);
+  const removePost = useDeletePost();
   const [text, setText] = useState("");
 
   async function onSend(e: React.FormEvent) {
@@ -32,7 +33,22 @@ export function PostDetailScreen() {
   }
 
   const post = postQ.data;
+  // 수정은 일기만, 삭제는 본인 게시물이면 습관 인증도 가능
   const canEdit = !!post && post.kind === "diary" && post.ownerId === deviceId;
+  const canDelete = !!post && post.ownerId === deviceId;
+
+  async function onDelete() {
+    if (!post) return;
+    const label = post.kind === "diary" ? "일기를" : "인증을";
+    if (!window.confirm(`이 ${label} 삭제할까요? 댓글도 함께 사라져요.`)) return;
+    try {
+      await removePost.mutateAsync({ id: post.id, imageUrl: post.imageUrl });
+      navigate("/feed", { replace: true });
+    } catch (err) {
+      window.alert("삭제 중 오류가 발생했어요.");
+      console.error(err);
+    }
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -72,10 +88,21 @@ export function PostDetailScreen() {
                 {canEdit ? (
                   <button
                     onClick={() => navigate(`/post/${post.id}/edit`)}
+                    disabled={removePost.isPending}
                     className="flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600"
                   >
                     <Pencil size={13} />
                     수정
+                  </button>
+                ) : null}
+                {canDelete ? (
+                  <button
+                    onClick={onDelete}
+                    disabled={removePost.isPending}
+                    className="ml-1.5 flex items-center gap-1 rounded-full border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-500 disabled:opacity-50"
+                  >
+                    <Trash2 size={13} />
+                    {removePost.isPending ? "삭제 중…" : "삭제"}
                   </button>
                 ) : null}
               </div>
